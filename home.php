@@ -1,16 +1,15 @@
 <?php
 
 include './components/connect.php';
-
 session_start();
 
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    $user_id = '';
 };
 
-// include 'components/wishlist_cart.php';
+include 'components/function_cart.php';
 
 ?>
 
@@ -98,31 +97,35 @@ if(isset($_SESSION['user_id'])){
             <div class="swiper-wrapper">
 
                 <?php
-     $select_products = $conn->prepare("SELECT * FROM `products` LIMIT 6"); 
-     $select_products->execute();
-     if($select_products->rowCount() > 0){
-      while($fetch_product = $select_products->fetch(PDO::FETCH_ASSOC)){
-   ?>
-                <form action="" method="post" class="swiper-slide slide">
-                    <input type="hidden" name="pid" value="<?= $fetch_product['id']; ?>">
-                    <input type="hidden" name="name" value="<?= $fetch_product['name']; ?>">
-                    <input type="hidden" name="price" value="<?= $fetch_product['price']; ?>">
-                    <input type="hidden" name="image" value="<?= $fetch_product['image_01']; ?>">
-                    <img src="uploaded_img/<?= $fetch_product['image_01']; ?>" alt="">
-                    <div class="name"><?= $fetch_product['name']; ?></div>
-                    <div class="flex">
-                        <div class="price"><?= $fetch_product['price']; ?> <span>VND</span></div>
-                        <input type="number" name="qty" class="qty" min="1" max="99"
-                            onkeypress="if(this.value.length == 2) return false;" value="1">
-                    </div>
-                    <input type="submit" value="Thêm vào giỏ hàng" class="btn" name="add_to_cart">
-                </form>
+                include './Product/function.php';
+
+                $use = mysqli_query($con, "USE `test`");
+                $select = mysqli_query($con, "SELECT * FROM `product` Limit 6") or die('query failed');
+
+                if (mysqli_num_rows($select) > 0) {
+                    $fetch = mysqli_fetch_assoc($select);
+
+                ?>
+                    <form action="" method="post" class="swiper-slide slide">
+                        <input type="hidden" name="pid" value="<?= $fetch['id']; ?>">
+                        <input type="hidden" name="name" value="<?= $fetch['name']; ?>">
+                        <input type="hidden" name="price" value="<?= $fetch['price']; ?>">
+                        <input type="hidden" name="image" value="<?= $fetch['image']; ?>">
+                        <img src="./Product/<?= $fetch['image']; ?>" alt="">
+
+                        <div class="name"><?= $fetch['name']; ?></div>
+                        <div class="flex">
+                            <div class="price"><?= $fetch['price']; ?> <span>VND</span></div>
+                            <input type="number" name="qty" class="qty" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="1">
+                        </div>
+                        <input type="submit" value="Thêm vào giỏ hàng" class="btn" name="add_to_cart">
+                    </form>
                 <?php
-      }
-   }else{
-      echo '<p class="empty">no products added yet!</p>';
-   }
-   ?>
+
+                } else {
+                    echo '<p class="empty">Không có sản phẩm mới nào</p>';
+                }
+                ?>
 
             </div>
 
@@ -133,13 +136,6 @@ if(isset($_SESSION['user_id'])){
     </section>
 
 
-
-
-
-
-
-
-
     <?php include './components/footer.php'; ?>
 
     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
@@ -147,57 +143,35 @@ if(isset($_SESSION['user_id'])){
     <script src="js/script.js"></script>
 
     <script>
-    var swiper = new Swiper(".home-slider", {
-        loop: true,
-        spaceBetween: 20,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-    });
+        var swiper = new Swiper(".home-slider", {
+            loop: true,
+            spaceBetween: 20,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+        });
 
-    var swiper = new Swiper(".category-slider", {
-        loop: true,
-        spaceBetween: 20,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            0: {
-                slidesPerView: 2,
-            },
-            650: {
-                slidesPerView: 3,
-            },
-            768: {
-                slidesPerView: 4,
-            },
-            1024: {
-                slidesPerView: 5,
-            },
-        },
-    });
 
-    var swiper = new Swiper(".products-slider", {
-        loop: true,
-        spaceBetween: 20,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            550: {
-                slidesPerView: 2,
+        var swiper = new Swiper(".products-slider", {
+            loop: true,
+            spaceBetween: 20,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
             },
-            768: {
-                slidesPerView: 2,
+            breakpoints: {
+                550: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
             },
-            1024: {
-                slidesPerView: 3,
-            },
-        },
-    });
+        });
     </script>
 
 </body>

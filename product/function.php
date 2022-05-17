@@ -122,4 +122,3 @@ function loginFromSocialCallBack($socialUser) {
         header('Location: ../login.php');
     }
 }
-?>

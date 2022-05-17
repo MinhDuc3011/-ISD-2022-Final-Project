@@ -94,7 +94,7 @@
             <div>
                 <button id="menuButton"><i class="fas fa-bars"></i></button>
                 <!--Logo-->
-                <a href="../../Manage Account/index.php" id="logo">
+                <a href="index.php" id="logo">
                     <img src="apple.png" alt="">
 
                 </a>
@@ -168,28 +168,28 @@
         <div class="navbar" id="navbar">
             <ul class="links">
                 <li class="nav-links">
-                    <a href="#" class="link"><strong>Samsung</strong></a>
+                    <a href="mobil.html" class="link"><strong>Samsung</strong></a>
                 </li>
                 <li class="nav-links">
                     <a href="xiaomi.php" class="link"><strong>Xiaomi</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a href="#" class="link"><strong>Oppo</strong></a>
+                    <a href="mobil.html" class="link"><strong>Oppo</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a href="#" class="link"><strong>Nokia</strong></a>
+                    <a href="mobil.html" class="link"><strong>Nokia</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a href="#" class="link"><strong>Iphone</strong></a>
+                    <a href="mobil.html" class="link"><strong>Iphone</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a href="#" class="link"><strong>Vivo</strong></a>
+                    <a href="mobile.html" class="link"><strong>Vivo</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a herf="#" class="link"><strong>ASUS</strong></a>
+                    <a herf="mobile.html" class="link"><strong>ASUS</strong></a>
                 </li>
                 <li class="nav-links">
-                    <a herf="#" class="link"><strong>Realme</strong></a>
+                    <a herf="mobile.html" class="link"><strong>Realme</strong></a>
                 </li>
             </ul>
 

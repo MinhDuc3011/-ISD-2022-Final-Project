@@ -1,6 +1,6 @@
 <?php
 
-include 'components/connect.php';
+include './components/connect.php';
 
 session_start();
 
@@ -19,14 +19,6 @@ if (isset($_POST['submit'])) {
    $row = mysqli_fetch_assoc($select);
 
    if (mysqli_num_rows($select) > 0) {
-
-       // check if user is admin or user
-     // $logged_in_user = mysqli_fetch_assoc($select);
-
-       // if ($logged_in_user['user_type'] == 'admin') {
-       //     $_SESSION['user'] = $logged_in_user;
-       //     header("location: ../Product/admin/addProduct.php");
-       // } else {
        if ($row['user_type']  == 'admin') {
            $_SESSION['user_id'] = $row['id'];
            $_SESSION['loggedin'] = true;
@@ -65,7 +57,7 @@ if (isset($_POST['submit'])) {
 </head>
 <body>
    
-<?php include 'components/user_header.php'; ?>
+<?php include 'components/user_header.php'; ?> 
 
 <section class="form-container">
 
@@ -74,7 +66,7 @@ if (isset($_POST['submit'])) {
       <input type="email" name="email" required placeholder="Email" maxlength="50"  class="box">
       <input type="password" name="password" required placeholder="Mật khẩu" maxlength="20"  class="box">
       <input type="submit" value="Đăng nhập" class="btn" name="submit">
-      <p> <a href="../Manage Account/forgot_password.php" class="forgot-password">Quên mật khẩu?<a></p>
+      <p> <a href="forgot_password.php" class="forgot-password">Quên mật khẩu?<a></p>
       <a href="user_register.php" class="option-btn-1">Đăng ký ngay</a>
    </form>
 
