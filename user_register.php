@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
        } else {
            $crypt_password = mysqli_real_escape_string($con_db, md5($_POST['password'])); 
            $insert = mysqli_query($con_db, "INSERT INTO `user_information`(name, email, phone, password) VALUES ('$name', '$email', '$phone', '$crypt_password')") or die('query failed');
-           header('location:login.php');
+           header('location:user_login.php');
        }
 }
 
@@ -77,7 +77,7 @@ if (isset($_POST['submit'])) {
             <!-- <input type="file" name="image" class="box" accept="image/jpg, image/png"> -->
             <input type="submit" value="Đăng ký" name="submit" class="btn">
       <p>Bạn đã có tài khoản</p>
-      <a href="user_login.php" class="option-btn">Đăng nhập</a>
+      <a href="user_login.php" class="option-btn-1">Đăng nhập</a>
    </form>
 
 </section>

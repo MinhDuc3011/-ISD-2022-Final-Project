@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
     $user_id = '';
 };
 
-include 'components/function_cart.php';
+
 
 ?>
 
@@ -98,7 +98,7 @@ include 'components/function_cart.php';
 
                 <?php
                 include './Product/function.php';
-
+                include './components/function_cart.php';
                 $use = mysqli_query($con, "USE `test`");
                 $select = mysqli_query($con, "SELECT * FROM `product` Limit 6") or die('query failed');
 

@@ -43,7 +43,6 @@
         session_start();
         include '../connect_db.php';
         include '../function.php';
-        include '../../Manage Account/config.php';
          $user_id = $_SESSION['user_id'];
                                         
         if (isset($_GET['logout'])) {
@@ -59,9 +58,9 @@
             </div>
             <div style="padding-right: 20px;" class="right-panel">
                 <img height="24" src="../images/home.png" />
-                <a style="color:black" href="../../Manage Account/index.php">Trang chủ</a>
+                <a style="color:black" href="../../home.php">Trang chủ</a>
                 <img height="24" src="../images/logout.png" />
-                <a style="color:black" href="../../Manage Account/index.php?logout=<?php echo $user_id; ?>">Đăng xuất</a>
+                <a style="color:black" href="../../home.php?logout=<?php echo $user_id; ?>">Đăng xuất</a>
             </div>
         </div>
     </div>
