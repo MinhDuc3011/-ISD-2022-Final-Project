@@ -23,9 +23,9 @@
                 <a href="#">Mobile</a>
 
                 <ul class="subnav">
-                    <li><a href="#">Iphone</a></li>
-                    <li><a href="#">Samsung</a></li>
-                    <li><a href="#">Oppo</a></li>
+                    <li><a href="../admin/iphone.php">Iphone</a></li>
+                    <li><a href="../admin/iphone.php">Samsung</a></li>
+                    <li><a href="../admin/iphone.php">Oppo</a></li>
                 </ul>
             </li>
             <li>
@@ -58,7 +58,7 @@
 
         <div class="profile">
             <?php          
-             include 'components/connect.php';
+             include 'connect.php';
              $use = mysqli_query($con_db, "USE `manage_account`");
              if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
                 $user_id = $_SESSION['user_id'];
@@ -72,7 +72,7 @@
             <a href="update_user.php" class="btn">Cập nhật thông tin</a>
 
             <?php 
-            include 'components/connect.php';
+            include 'connect.php';
             $user_id = $_SESSION['user_id'];
                                         
             if (isset($_GET['logout'])) {
@@ -83,7 +83,7 @@
             ?>
             <a href="home.php?logout=<?php echo $user_id; ?>" class="delete-btn">Đăng xuất</a>
             <?php
-            }else{
+            }else{     
          ?>
             <div class="flex-btn">
                 <a href="user_login.php" class="option-btn">Đăng nhập</a>

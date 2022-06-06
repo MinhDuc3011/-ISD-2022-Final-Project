@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
        if ($row['user_type']  == 'admin') {
            $_SESSION['user_id'] = $row['id'];
            $_SESSION['loggedin'] = true;
-           header("location: ../Product/admin/addProduct.php");
+           header("location: ./admin/dashboard.php");
        } else {
            
            $_SESSION['user_id'] = $row['id'];

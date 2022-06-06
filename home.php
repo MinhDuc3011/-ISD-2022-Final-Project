@@ -1,44 +1,43 @@
 <?php
 
-include './components/connect.php';
+include 'components/connect.php';
+
 session_start();
 
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
+if(isset($_SESSION['user_id'])){
+   $user_id = $_SESSION['user_id'];
+}else{
+   $user_id = '';
 };
 
-
+include 'components/wishlist_cart.php';
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vua Táo - Điện thoại, Phụ kiện chính hãng</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Vua Táo Store - Điện thoại phụ kiện chính hãng</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+   <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+   
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
-    <!-- font awesome cdn link  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
-    <!-- custom css file link  -->
-    <link rel="stylesheet" href="css/style.css">
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
 
 </head>
-
 <body>
+   
+<?php include 'components/user_header.php'; ?>
 
-    <?php include './components/user_header.php'; ?>
+<div class="home-bg">
 
-    <div class="home-bg">
-
-        <section class="home">
+<section class="home">
 
             <div class="swiper home-slider">
 
@@ -85,95 +84,122 @@ if (isset($_SESSION['user_id'])) {
 
         </section>
 
-    </div>
+</div>
 
 
-    <section class="home-products">
 
-        <h1 class="heading">Sản phẩm mới nhất</h1>
+<section class="home-products">
 
-        <div class="swiper products-slider">
+   <h1 class="heading">Sản phẩm mới nhất</h1>
 
-            <div class="swiper-wrapper">
+   <div class="swiper products-slider">
 
-                <?php
-                include './Product/function.php';
-                include './components/function_cart.php';
-                $use = mysqli_query($con, "USE `test`");
-                $select = mysqli_query($con, "SELECT * FROM `product` Limit 6") or die('query failed');
+   <div class="swiper-wrapper">
 
-                if (mysqli_num_rows($select) > 0) {
-                    $fetch = mysqli_fetch_assoc($select);
+   <?php
+     $select_products = $conn->prepare("SELECT * FROM `products` LIMIT 6"); 
+     $select_products->execute();
+     if($select_products->rowCount() > 0){
+      while($fetch_product = $select_products->fetch(PDO::FETCH_ASSOC)){
+   ?>
+   <form action="" method="post" class="swiper-slide slide">
+      <input type="hidden" name="pid" value="<?= $fetch_product['id']; ?>">
+      <input type="hidden" name="name" value="<?= $fetch_product['name']; ?>">
+      <input type="hidden" name="price" value="<?= $fetch_product['price']; ?>">
+      <input type="hidden" name="image" value="<?= $fetch_product['image_01']; ?>">
+      <a href="quick_view.php?pid=<?= $fetch_product['id']; ?>" class="fas fa-eye"></a>
+      <img src="uploaded_img/<?= $fetch_product['image_01']; ?>" alt="">
+      <div class="name"><?= $fetch_product['name']; ?></div>
+      <div class="flex">
+         <div class="price"><span></span><?= $fetch_product['price']; ?><span>VND</span></div>
+         <input type="number" name="qty" class="qty" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="1">
+      </div>
+      <input type="submit" value="Thêm vào giỏ hàng" class="btn" name="add_to_cart">
+   </form>
+   <?php
+      }
+   }else{
+      echo '<p class="empty">Không có sản phẩm mới nào</p>';
+   }
+   ?>
 
-                ?>
-                    <form action="" method="post" class="swiper-slide slide">
-                        <input type="hidden" name="pid" value="<?= $fetch['id']; ?>">
-                        <input type="hidden" name="name" value="<?= $fetch['name']; ?>">
-                        <input type="hidden" name="price" value="<?= $fetch['price']; ?>">
-                        <input type="hidden" name="image" value="<?= $fetch['image']; ?>">
-                        <img src="./Product/<?= $fetch['image']; ?>" alt="">
+   </div>
 
-                        <div class="name"><?= $fetch['name']; ?></div>
-                        <div class="flex">
-                            <div class="price"><?= $fetch['price']; ?> <span>VND</span></div>
-                            <input type="number" name="qty" class="qty" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="1">
-                        </div>
-                        <input type="submit" value="Thêm vào giỏ hàng" class="btn" name="add_to_cart">
-                    </form>
-                <?php
+   <div class="swiper-pagination"></div>
 
-                } else {
-                    echo '<p class="empty">Không có sản phẩm mới nào</p>';
-                }
-                ?>
+   </div>
 
-            </div>
-
-            <div class="swiper-pagination"></div>
-
-        </div>
-
-    </section>
+</section>
 
 
-    <?php include './components/footer.php'; ?>
-
-    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-
-    <script src="js/script.js"></script>
-
-    <script>
-        var swiper = new Swiper(".home-slider", {
-            loop: true,
-            spaceBetween: 20,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-        });
 
 
-        var swiper = new Swiper(".products-slider", {
-            loop: true,
-            spaceBetween: 20,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                550: {
-                    slidesPerView: 2,
-                },
-                768: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                },
-            },
-        });
-    </script>
+
+
+
+
+
+<?php include 'components/footer.php'; ?>
+
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+
+<script src="js/script.js"></script>
+
+<script>
+
+var swiper = new Swiper(".home-slider", {
+   loop:true,
+   spaceBetween: 20,
+   pagination: {
+      el: ".swiper-pagination",
+      clickable:true,
+    },
+});
+
+ var swiper = new Swiper(".category-slider", {
+   loop:true,
+   spaceBetween: 20,
+   pagination: {
+      el: ".swiper-pagination",
+      clickable:true,
+   },
+   breakpoints: {
+      0: {
+         slidesPerView: 2,
+       },
+      650: {
+        slidesPerView: 3,
+      },
+      768: {
+        slidesPerView: 4,
+      },
+      1024: {
+        slidesPerView: 5,
+      },
+   },
+});
+
+var swiper = new Swiper(".products-slider", {
+   loop:true,
+   spaceBetween: 20,
+   pagination: {
+      el: ".swiper-pagination",
+      clickable:true,
+   },
+   breakpoints: {
+      550: {
+        slidesPerView: 2,
+      },
+      768: {
+        slidesPerView: 2,
+      },
+      1024: {
+        slidesPerView: 3,
+      },
+   },
+});
+
+</script>
 
 </body>
-
 </html>

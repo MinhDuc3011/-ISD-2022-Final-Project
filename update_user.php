@@ -1,89 +1,87 @@
 <?php
 
-include './components/connect.php';
+include 'components/connect.php';
 
 session_start();
 
-$user_id = $_SESSION['user_id'];
+if(isset($_SESSION['user_id'])){
+   $user_id = $_SESSION['user_id'];
+}else{
+   $user_id = '';
+};
 
+if(isset($_POST['submit'])){
 
-if (isset($_POST['submit'])) {
-   $use = mysqli_query($con_db, "USE `manage_account`");
-   $update_name = mysqli_real_escape_string($con_db, $_POST['update_name']);
-   $update_email = mysqli_real_escape_string($con_db, $_POST['update_email']);
-   $update_phone = mysqli_real_escape_string($con_db, $_POST['update_phone']);
-   
-   $old_password = $_POST["old_password"];
-   $current_password = mysqli_real_escape_string($con_db, md5($_POST["current_password"])); 
-   $new_password = mysqli_real_escape_string($con_db, $_POST["new_password"]); 
-   $confirm_password = mysqli_real_escape_string($con_db, $_POST["confirm_password"]); 
+   $name = $_POST['name'];
+   $name = filter_var($name, FILTER_SANITIZE_STRING);
+   $email = $_POST['email'];
+   $email = filter_var($email, FILTER_SANITIZE_STRING);
 
-   $select = mysqli_query($con_db, "SELECT * FROM `user_information` WHERE email = '$update_email' AND phone = '$update_phone'") or die('query failed');
-   
+   $update_profile = $conn->prepare("UPDATE `users` SET name = ?, email = ? WHERE id = ?");
+   $update_profile->execute([$name, $email, $user_id]);
 
-   $specialChars = preg_match('@[^\w]@', $new_password);
+   $empty_pass = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+   $prev_pass = $_POST['prev_pass'];
+   $old_pass = sha1($_POST['old_pass']);
+   $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
+   $new_pass = sha1($_POST['new_pass']);
+   $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
+   $cpass = sha1($_POST['cpass']);
+   $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
 
-   if (!empty($current_password) || !empty($new_password)|| !empty($confirm_password)) {
-       if($current_password != $old_password) {
-           $message[] = "Mật khẩu hiện tại không chính xác";
-       } else if ($new_password != $confirm_password) {
-           $message[] = "Mật khẩu nhập lại không chính xác";
-       } else if(strlen($new_password) < 8 || strlen($new_password) > 16) {
-           $message[] = "Sai định dạng mật khẩu";         
-       } else if(strlen($update_phone) < 10 || strlen($update_phone) > 10) {
-           $message[] = "Sai định dạng số điện thoại";
-       } else if (!$specialChars) {
-           $message[] = "Sai định dạng mật khẩu";         
-       }else {
-           $use = mysqli_query($con_db, "USE `manage_account`");
-           $new_crypt = mysqli_real_escape_string($con_db, md5($_POST['new_password'])); 
-           mysqli_query($con_db, "UPDATE `user_information` SET name = '$update_name', email = '$update_email', phone = '$update_phone', password = '$new_crypt' WHERE id = '$user_id'") or die('query failed');
-           $message[] = "Cập nhật thành công";
-       }
+   if($old_pass == $empty_pass){
+      $message[] = 'Nhập mật khẩu hiện tại';
+   }elseif($old_pass != $prev_pass){
+      $message[] = 'Mật khẩu hiện tại không cính xác!';
+   }elseif($new_pass != $cpass){
+      $message[] = 'Mật khẩu nhập lại không chính xác';
+   }else{
+      if($new_pass != $empty_pass){
+         $update_admin_pass = $conn->prepare("UPDATE `users` SET password = ? WHERE id = ?");
+         $update_admin_pass->execute([$cpass, $user_id]);
+         $message[] = 'Cập nhật thành công!';
+      }else{
+         $message[] = 'Nhập mật khẩu mới!';
+      }
    }
+   
 }
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cập nhật thông tin</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>register</title>
+   
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
-    <!-- font awesome cdn link  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
-    <!-- custom css file link  -->
-    <link rel="stylesheet" href="css/style.css">
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
 
 </head>
-
 <body>
+   
+<?php include 'components/user_header.php'; ?>
 
-    <?php include 'components/user_header.php'; ?>
+<section class="form-container">
 
-    <section class="form-container">
+   <form action="" method="post">
+      <h3>Cập nhật thông tin cá nhân</h3>
+      <input type="hidden" name="prev_pass" value="<?= $fetch_profile["password"]; ?>">
+      <input type="text" name="name" required placeholder="Họ tên" maxlength="20"  class="box" value="<?= $fetch_profile["name"]; ?>">
+      <input type="email" name="email" required placeholder="Email" maxlength="50"  class="box" oninput="this.value = this.value.replace(/\s/g, '')" value="<?= $fetch_profile["email"]; ?>">
+      <input type="password" name="old_pass" placeholder="Mật khẩu hiện tại" maxlength="20"  class="box" oninput="this.value = this.value.replace(/\s/g, '')">
+      <input type="password" name="new_pass" placeholder="Mật khẩu mới" maxlength="20"  class="box" oninput="this.value = this.value.replace(/\s/g, '')">
+      <input type="password" name="cpass" placeholder="Nhập lại mật khẩu mới" maxlength="20"  class="box" oninput="this.value = this.value.replace(/\s/g, '')">
+      <input type="submit" value="Cập nhật" class="btn" name="submit">
+   </form>
 
-        <form action="" method="post">
-            <h3>Cập nhật thông tin</h3>
-            <input type="text" placeholder="Tên" name="update_name" value="<?php echo $fetch['name']; ?>" class="box"
-                required>
-            <input type="email" placeholder="Email" name="update_email" value="<?php echo $fetch['email']; ?>"
-                class="box" required>
-            <input type="phone" placeholder="Phone" name="update_phone" value="<?php echo $fetch['phone']; ?>"
-                class="box" required>
-            <input type="hidden" name="old_password" value="<?php echo $fetch['password']; ?>">
-            <input type="password" placeholder="Mật khẩu hiện tại" name="current_password" class="box" required>
-            <input type="password" placeholder="Mật khẩu mới" name="new_password" class="box" required>
-            <input type="password" placeholder="Nhập lại mật khẩu" name="confirm_password" class="box" required>
-            <input type="submit" value="Cập nhật" class="btn" name="submit">
-        </form>
-
-    </section>
+</section>
 
 
 
@@ -97,10 +95,9 @@ if (isset($_POST['submit'])) {
 
 
 
-    <?php include 'components/footer.php'; ?>
+<?php include 'components/footer.php'; ?>
 
-    <script src="js/script.js"></script>
+<script src="js/script.js"></script>
 
 </body>
-
 </html>
